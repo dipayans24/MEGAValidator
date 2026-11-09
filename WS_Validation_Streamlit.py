@@ -297,9 +297,14 @@ if MEGAFilePath and PaymentmentFilePath:
         with st.status("Processing..", expanded=True) as status:
             Current_File = generatePaymentReport(save_upload(PaymentmentFilePath))
             validatedSheets, AVP = ValidatePayment(save_upload(MEGAFilePath), Current_File) 
-    
-    
-        with pd.ExcelWriter(outputExcel) as file:
+
+            st.dataframe(AVP, hide_index=True)
+            st.dataframe(pd.pivot_table(Current_File, index="PaymentFunnel", values="CreatedAt", aggfunc="count", sort=True , margins=True ).rename(columns={"CreatedAt" : "Count"}) )
+            
+            status.update(label="Completed!",expanded=False)
+
+        buffer = io.BytesIO() 
+        with pd.ExcelWriter(buffer, engine="openpyxl") as file:
             for sheet, data in validatedSheets.items():
                 data["Phone Number"] = data["Phone Number"].astype(float, errors = "ignore")
                 data.to_excel(file, sheet_name = sheet, index=False)
@@ -307,15 +312,10 @@ if MEGAFilePath and PaymentmentFilePath:
             Current_File.to_excel(file, sheet_name="Payments", index=False)
             AVP.to_excel(file, sheet_name="MatchedPaymentSummary", index=False)
 
-
-        st.dataframe(AVP, hide_index=True)
-
-        st.dataframe(pd.pivot_table(Current_File, index="PaymentFunnel", values="CreatedAt", aggfunc="count", sort=True , margins=True ).rename(columns={"CreatedAt" : "Count"}) )
-
         with open(outputExcel, "rb") as f:
                 st.download_button(
                     label="Save MEGA Validated file",
-                    data=f.read(),
+                    data=buffer.getvalue(),
                     file_name=outputExcel,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     on_click="ignore"
