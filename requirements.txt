@@ -1,0 +1,7 @@
+streamlit
+openpyxl
+xlsxwwriter
+pandas
+numpy 
+regex
+stqdm
