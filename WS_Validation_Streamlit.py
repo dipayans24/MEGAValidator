@@ -1,5 +1,5 @@
 import tempfile
-
+import io 
 import pandas as pd
 import regex as re, os
 from datetime import datetime, time, timedelta, date
