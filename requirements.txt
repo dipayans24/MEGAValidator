@@ -1,6 +1,6 @@
 streamlit
 openpyxl
-xlsxwwriter
+xlsxwriter
 pandas
 numpy 
 regex
