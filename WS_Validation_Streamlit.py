@@ -294,10 +294,11 @@ if MEGAFilePath and PaymentmentFilePath:
     btn = st.button("Validate Data", type="primary")
 
     if btn:
-        Current_File = generatePaymentReport(save_upload(PaymentmentFilePath))
-        validatedSheets, AVP = ValidatePayment(save_upload(MEGAFilePath), Current_File) 
-
-
+        with st.status("Processing..", expanded=True) as status:
+            Current_File = generatePaymentReport(save_upload(PaymentmentFilePath))
+            validatedSheets, AVP = ValidatePayment(save_upload(MEGAFilePath), Current_File) 
+    
+    
         with pd.ExcelWriter(outputExcel) as file:
             for sheet, data in validatedSheets.items():
                 data["Phone Number"] = data["Phone Number"].astype(float, errors = "ignore")
