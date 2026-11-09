@@ -307,9 +307,9 @@ if MEGAFilePath and PaymentmentFilePath:
             AVP.to_excel(file, sheet_name="MatchedPaymentSummary", index=False)
 
 
-        st.dataframe(AVP)
+        st.dataframe(AVP, hide_index=True)
 
-        st.dataframe(pd.pivot_table(Current_File, index="PaymentFunnel", values="CreatedAt", aggfunc="count", sort=True , margins=True ) )
+        st.dataframe(pd.pivot_table(Current_File, index="PaymentFunnel", values="CreatedAt", aggfunc="count", sort=True , margins=True ).rename(columns={"CreatedAt" : "Count"}) )
 
         with open(outputExcel, "rb") as f:
                 st.download_button(
